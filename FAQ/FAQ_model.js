@@ -1,10 +1,7 @@
 const mongoose=require('mongoose')
 
 const FAQSchema=mongoose.Schema({
-    createdAt:{
-        type:Date,
-        default:new Date()
-    },
+    createdAt:String,
     question:String,
     answer:String,
     deleteFlag:{

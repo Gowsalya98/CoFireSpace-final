@@ -3,7 +3,7 @@ const {register}=require('../user/user_model')
 const {spaceDetails}=require('../addSpace/space_model')
 const {booking}=require('./booking_model')
 const jwt=require('jsonwebtoken')
-
+const moment=require('moment')
 
 const userReserveToSpace=async(req,res)=>{
     try{
@@ -20,6 +20,7 @@ const userReserveToSpace=async(req,res)=>{
                              req.body.spaceBookingStatus="booking waiting"
                         const result=await spaceDetails.findOneAndUpdate({_id:req.params.spaceId},req.body,{new:true})
                         if(result){
+                            req.body.createdAt=moment(new Date()).toISOString().slice(0,10)
                                 const data=await booking.create(req.body)
                                 if(data){
                                     res.status(200).send({success:'true',message:'booking successfull',data:data})

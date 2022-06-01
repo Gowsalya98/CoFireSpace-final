@@ -39,7 +39,7 @@ const addSubAdmin=async(req,res)=>{
                 req.body.adminId=token.id
                 console.log('line 37',token.id)
                req.body.password=await bcrypt.hash(req.body.password,10)
-               req.body.createdAt=moment(new Date()).toISOString().slice(0,9)
+               req.body.createdAt=moment(new Date()).toISOString().slice(0,10)
                 console.log('line 43',req.body.createdAt)
                 superAdmin.create(req.body,(err,data)=>{
                     if(err){

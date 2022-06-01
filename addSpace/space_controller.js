@@ -17,7 +17,7 @@ const addSpaceForHost=async(req,res)=>{
             if(result){
               console.log('line 16',result)
                 req.body.HostDetails=result[0]
-                req.body.createdAt=moment(new Date()).toISOString().slice(0,9)
+                req.body.createdAt=moment(new Date()).toISOString().slice(0,10)
                 console.log('line 21',req.body.createdAt)
                 const amount=req.body.price
                 console.log('line 22',amount)

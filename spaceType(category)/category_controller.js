@@ -11,7 +11,7 @@ const addSpaceType=async(req,res)=>{
             const token=await jwt.decode(req.headers.authorization)
             req.body.superAdminId=token.id
             console.log('line 12',req.body.superAdminId)
-            req.body.createdAt=moment(new Date()).toISOString().slice(0,9)
+            req.body.createdAt=moment(new Date()).toISOString().slice(0,10)
                 console.log('line 14',req.body.createdAt)
             spaceType.create(req.body,(err,data)=>{
                 if(err){
@@ -39,7 +39,7 @@ const spaceImage=async(req,res)=>{
       }else{
         console.log('line',req.file)
         req.body.image=`http://192.168.0.112:8080/uploads/${req.file.originalname}`
-        req.body.createdAt=moment(new Date()).toISOString().slice(0,9)
+        req.body.createdAt=moment(new Date()).toISOString().slice(0,10)
           console.log('line 43',req.body.createdAt)
         image.create(req.body,async(err,data)=>{
           if(err){

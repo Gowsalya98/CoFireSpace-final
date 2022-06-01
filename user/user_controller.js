@@ -13,13 +13,13 @@ const userRegister= async(req, res) => {
             const num= await register.aggregate([{$match:{ email: req.body.email }}])
                 if (num.length== 0) {
                     req.body.password = await bcrypt.hash(req.body.password, 10)
-                    req.body.createdAt=moment(new Date()).toISOString().slice(0,9)
+                    req.body.createdAt=moment(new Date()).toISOString().slice(0,10)
                     console.log('line 16',req.body.createdAt)
                     register.create(req.body, (err, data) => {
                         if (data) {
                             const encryptId=jwt.sign({id:data._id},'who are you')
                             console.log(encryptId)
-                            postMail(data.email,'verification',`http://192.168.0.112:8080/user/verification/${encryptId}`)
+                            postMail(data.email,'verification',`http://192.168.0.112:8080/users/verification/${encryptId}`)
                             console.log('line 12',data)
                             res.status(200).send({ success:'true',message: 'Successfully register and verification send your email', data})    
                         } else {
@@ -53,17 +53,17 @@ const login = async(req, res) => {
     try {
             const data=await register.findOne({ email: req.body.email,deleteFlag:false,active:true})
             console.log(data);
-                if (data) {
+            if (data) {
                     console.log('line 84',data)
                      const password=await bcrypt.compare(req.body.password,data.password)
-                    if(password==true){
+                if(password==true){
                         console.log('line 87',password)
-                    const token = (jwt.sign({id:data._id}, 'secretKey'))
-                    res.status(200).send({ success:'true',message: "Login Successfully", token, data:data })
+                        const token = (jwt.sign({id:data._id}, 'secretKey'))
+                        res.status(200).send({ success:'true',message: "Login Successfully", token, data:data })
                 } else {
                     res.status(200).send({ success:'false',message: "invaild password",data:[]})
                 }
-        }else{res.status(400).send({ success:'false',message: "data not exist",data:[]})}
+            }else{res.status(400).send({ success:'false',message: "please check your email",data:[]})}
     } catch (err) {
         console.log(err)
         res.status(500).send({success:'false',message:'internal server error'})

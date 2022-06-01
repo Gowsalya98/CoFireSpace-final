@@ -1,12 +1,14 @@
 const mongoose=require('mongoose')
 const jwt=require('jsonwebtoken')
+const moment=require('moment')
 const {FAQ}=require('./FAQ_model')
 
 const createFAQ=async(req,res)=>{
     try{
         const token=jwt.decode(req.headers.authorization)
         if(token!=null){
-        const data=await FAQ.create(req.body)
+            req.body.createdAt=moment(new Date()).toISOString().slice(0,10)
+            const data=await FAQ.create(req.body)
         if(data!=null){
             res.status(200).send({success:'true',message:'successfull',data:data})
         }else{

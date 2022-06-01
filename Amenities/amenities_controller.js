@@ -9,7 +9,7 @@ const createAmenities=async(req,res)=>{
         const token=jwt.decode(req.headers.authorization)
         req.body.adminId = token.id;
         console.log('line 12', req.body.adminId)
-        req.body.createdAt=moment(new Date()).toISOString().slice(0,9)
+        req.body.createdAt=moment(new Date()).toISOString().slice(0,10)
           console.log('line 13',req.body.createdAt)
         const data=await amenities.create(req.body)
         if(data!=null){
