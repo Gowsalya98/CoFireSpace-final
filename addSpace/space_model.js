@@ -8,16 +8,17 @@ const spaceAddForHost=mongoose.Schema({
     contact:Number,
     address:String,
     city:String,
-    // count:{
-    //     type:Number,
-    //     default:0
-    // },
     pincode:String,
     spaceSqFt:String,
     numOfPersonFitInRoom:Number,
     amenities:[String],
     category:String,
     spaceImage:[String],
+    userIpAddress:[String],
+    ipAddressCount:{
+        type:Number,
+        default:0
+    },
     //noOfDays:Number,
     spaceTime:String,
     price:Number,

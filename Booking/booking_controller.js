@@ -65,7 +65,45 @@ const userGetOurBookingHistory=async(req,res)=>{
         res.status(500).send({message:'internal server error'})
     }
 }
-
+const currentBookingDetails=async(req,res)=>{
+    try{
+        const today=moment(new Date()).toISOString().slice(0,10)
+        const data=await booking.aggregate([{$match:{$and:[{createdAt:today},{deleteFlag:false}]}}])
+            if(data){
+                data.sort().reverse()
+                res.status(200).send({success:'true',message:'current booking details',data})
+            }else{
+                res.status(302).send({success:'false',message:'data not found',data:[]})
+            }
+    }catch(err){
+        res.status(500).send({message:'internal server error'})
+    }
+}
+const pastBookingDetails=async(req,res)=>{
+    try{
+        booking.find({},(err,data)=>{
+           if(data){
+               console.log('line 156',data)
+               const currantDate=moment(new Date()).toISOString().slice(0,10)
+               var arr=[]
+               for(i=0;i<data.length;i++){
+                  if(data[i].userDetails.createdAt>currantDate){
+                      console.log('line 91',data)
+                       arr.push(data[i])
+                  }else {
+                      res.status(302).send({message:'user does not book in any place..!'})
+                   }
+                  }
+               console.log('.....',arr)
+              // res.status(200).send({success:'true',message:'previous booking details',data})
+           }else{
+               res.status(302).send({success:'false',message:'failed'})
+           }
+        })
+        }catch(err){
+           res.status(500).send({message:'internal server error'})
+        }
+}
 const getAllBooking=async(req,res)=>{
     try{
         const token=jwt.decode(req.headers.authorization)
@@ -102,4 +140,11 @@ const getById=async(req,res)=>{
     }
 }
 
-module.exports={userReserveToSpace,userGetOurBookingHistory,getAllBooking,getById}
+module.exports={
+    userReserveToSpace,
+    userGetOurBookingHistory,
+    currentBookingDetails,
+    pastBookingDetails,
+    getAllBooking,
+    getById
+}
