@@ -17,7 +17,7 @@ const userReserveToSpace=async(req,res)=>{
                      if(result1){
                             req.body.spaceId=result1._id
                             req.body.spaceDetails=result1
-                             req.body.spaceBookingStatus="booking waiting"
+                             req.body.spaceDetails.spaceBookingStatus="booking waiting"
                         const result=await spaceDetails.findOneAndUpdate({_id:req.params.spaceId},req.body,{new:true})
                         if(result){
                             req.body.createdAt=moment(new Date()).toISOString().slice(0,10)
@@ -67,42 +67,48 @@ const userGetOurBookingHistory=async(req,res)=>{
 }
 const currentBookingDetails=async(req,res)=>{
     try{
+        const userToken=jwt.decode(req.headers.authorization)
+        if(userToken!=null){
+            console.log('...',userToken.id)
         const today=moment(new Date()).toISOString().slice(0,10)
-        const data=await booking.aggregate([{$match:{$and:[{createdAt:today},{deleteFlag:false}]}}])
+        const data=await booking.aggregate([{$match:{$and:[{createdAt:today},{"userId":userToken.id},{deleteFlag:false}]}}])
             if(data){
                 data.sort().reverse()
                 res.status(200).send({success:'true',message:'current booking details',data})
             }else{
                 res.status(302).send({success:'false',message:'data not found',data:[]})
             }
+        }else{
+            res.status(302).send({success:'false',message:'unauthorized'})  
+        }
     }catch(err){
         res.status(500).send({message:'internal server error'})
     }
 }
 const pastBookingDetails=async(req,res)=>{
     try{
-        booking.find({},(err,data)=>{
-           if(data){
-               console.log('line 156',data)
-               const currantDate=moment(new Date()).toISOString().slice(0,10)
-               var arr=[]
-               for(i=0;i<data.length;i++){
-                  if(data[i].userDetails.createdAt>currantDate){
-                      console.log('line 91',data)
-                       arr.push(data[i])
-                  }else {
-                      res.status(302).send({message:'user does not book in any place..!'})
-                   }
-                  }
-               console.log('.....',arr)
-              // res.status(200).send({success:'true',message:'previous booking details',data})
-           }else{
-               res.status(302).send({success:'false',message:'failed'})
-           }
-        })
-        }catch(err){
-           res.status(500).send({message:'internal server error'})
+        const userToken=jwt.decode(req.headers.authorization)
+        if(userToken!=null){
+            const data=await booking.aggregate([{$match:{$and:[{"userId":userToken.id},{deleteFlag:false}]}}])
+            if(data){
+                const currentDate=moment(new Date()).toISOString().slice(0,10)
+                var arr=[]
+                data.map((result)=>{
+                    if(currentDate>result.eventFromDate){
+                        arr.push(result)
+                    }
+                })
+                console.log('.....',arr)
+                res.status(200).send({success:'true',message:' user past booking details',arr})
+            }else{
+                res.status(302).send({success:'false',message:'failed'}) 
+            }
+        }else{
+            res.status(302).send({success:'false',message:'unauthorized'})  
         }
+    }catch(err){
+        res.status(500).send({message:'internal server error'}) 
+    }
 }
 const getAllBooking=async(req,res)=>{
     try{

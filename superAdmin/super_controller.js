@@ -7,6 +7,10 @@ const {superAdmin}=require('./super_model')
 
 const login=async(req,res)=>{
     try {
+        const errors = validationResult(req)
+        if (!errors.isEmpty()) {
+            return res.status(400).send({ errors: errors.array() })
+        } else {
         const data=await superAdmin.findOne({ email: req.body.email},{deleteFlag:false})
             if (data) {
                 console.log('line 11',data)
@@ -21,6 +25,7 @@ const login=async(req,res)=>{
                 res.status(200).send({ success:'false',message: "invaild password",data:[]})
             }
     }else{res.status(400).send({ success:'false',message: "data not exist",data:[]})}
+}
 } catch (err) {
     console.log(err)
     res.status(500).send({success:'false',message:'internal server error'})

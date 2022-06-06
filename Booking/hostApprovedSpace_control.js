@@ -1,5 +1,6 @@
 const mongoose=require('mongoose')
 const {booking}=require('./booking_model')
+const moment=require('moment')
 const nodemailer=require('nodemailer')
 const jwt=require('jsonwebtoken')
 
@@ -109,8 +110,110 @@ const getAllRejectUserBooking=async(req,res)=>{
         res.status(500).send({message:'internal server error'})
     }
 }
-
+const pastBookingDetails=async(req,res)=>{
+    try{
+        const hostToken=jwt.decode(req.headers.authorization)
+        if(hostToken!=null){
+        const data=await booking.aggregate([{$match:{$and:[{"spaceDetails.HostId":hostToken.id},{deleteFlag:false}]}}])
+           if(data){
+               console.log('line 156',data)
+               const currantDate=moment(new Date()).toISOString().slice(0,10)
+               console.log('currentDate:',currantDate)
+               var arr=[]
+               data.map((result)=>{
+                   if(currantDate>result.eventFromDate){
+                       arr.push(result)
+                   }
+               })
+            //    for(i=0;i<data.length;i++){
+            //       if(currantDate>data[i].eventFromDate){
+            //           console.log('line 100',data)
+            //            arr.push(data[i])    
+            //            res.status(302).send({message:'user does not book in any place..!'})
+            //         }
+                //  }
+               console.log('.....',arr)
+              res.status(200).send({success:'true',message:'past booking details',arr})
+           }else{
+               res.status(302).send({success:'false',message:'failed'})
+           }
+        }else{
+            res.status(302).send({success:'false',message:'unauthorized'})   
+        }
+        }catch(err){
+            console.log(err)
+           res.status(500).send({message:'internal server error'})
+        }
+}
+const upcomingBookingDetails=async(req,res)=>{
+    try{
+        const hostToken=jwt.decode(req.headers.authorization)
+        if(hostToken!=null){
+            const data=await booking.aggregate([{$match:{$and:[{"spaceDetails.HostId":hostToken.id},{deleteFlag:false}]}}])
+            if(data){
+                const currentDate=moment(new Date()).toISOString().slice(0,10)
+                var arr=[]
+                data.map((result)=>{
+                    if(currentDate<result.eventFromDate){
+                        arr.push(result)
+                    }
+                })
+                console.log('.....',arr)
+                res.status(200).send({success:'true',message:'upcoming booking details',arr})
+            }else{
+                res.status(302).send({success:'false',message:'failed'}) 
+            }
+        }else{
+            res.status(302).send({success:'false',message:'unauthorized'})   
+        }
+    }catch(err){
+        res.status(500).send({message:'internal server error'})
+    }
+}
+const pendingBookingDetails=async(req,res)=>{
+    try{
+        const hostToken=jwt.decode(req.headers.authorization)
+        if(hostToken!=null){
+            const data=await booking.aggregate([{$match:{$and:[{"spaceDetails.spaceBookingStatus":'booking waiting'},{"spaceDetails.HostId":hostToken.id},{deleteFlag:false}]}}])
+                if(data){
+                    data.sort().reverse()
+                    res.status(200).send({success:'true',message:'pending booking details',data:data})
+                }else{
+                    res.status(302).send({success:'false',message:'data not found'}) 
+                }
+        }else{
+            res.status(302).send({success:'false',message:'unauthorized'}) 
+        }
+    }catch(err){
+        res.status(500).send({message:'internal server error'})
+    }
+}
+const confirmedBooking=async(req,res)=>{
+    try{
+        const hostToken=jwt.decode(req.headers.authorization)
+        if(hostToken!=null){
+            const data=await booking.aggregate([{$match:{$and:[{"spaceDetails.spaceBookingStatus":'booked'},{"spaceDetails.HostId":hostToken.id},{deleteFlag:false}]}}])
+                if(data){
+                    data.sort().reverse()
+                    res.status(200).send({success:'true',message:'confirm booking details',data:data})
+                }else{
+                    res.status(302).send({success:'false',message:'data not found'}) 
+                }
+        }else{
+            res.status(302).send({success:'false',message:'unauthorized'}) 
+        }  
+    }catch(err){
+        res.status(500).send({message:'internal server error'})
+    }
+}
 module.exports={
-    HostAcceptUserBooking,HostRejectUserBooking,hostGetOurSpaceBookingHistory,
-    getAllAcceptUserBooking,getAllRejectUserBooking
+    HostAcceptUserBooking,
+    HostRejectUserBooking,
+    hostGetOurSpaceBookingHistory,
+    getAllAcceptUserBooking,
+    getAllRejectUserBooking,
+    pastBookingDetails,
+    upcomingBookingDetails,
+    pendingBookingDetails,
+    confirmedBooking
 }

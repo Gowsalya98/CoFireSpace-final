@@ -4,17 +4,22 @@ const jwt=require('jsonwebtoken')
 const fast2sms=require('fast-two-sms')
 const nodemailer=require('nodemailer')
 const moment=require('moment')
+const {validationResult}=require('express-validator')
 const {randomString}=require('../middleware/randomString')
 const {spaceDetails}=require('../addSpace/space_model')
 const{register,sendOtp}=require('./user_model')
 
 const userRegister= async(req, res) => {
     try {
+        const errors =validationResult(req)
+            if(!errors.isEmpty()){
+                return res.status(400).send({errors:errors.array()})
+            }else{
             const num= await register.aggregate([{$match:{ email: req.body.email }}])
                 if (num.length== 0) {
                     req.body.password = await bcrypt.hash(req.body.password, 10)
                     req.body.createdAt=moment(new Date()).toISOString().slice(0,10)
-                    console.log('line 16',req.body.createdAt)
+                    console.log('line 21',req.body.createdAt)
                     register.create(req.body, (err, data) => {
                         if (data) {
                             const encryptId=jwt.sign({id:data._id},'who are you')
@@ -29,6 +34,7 @@ const userRegister= async(req, res) => {
                 } else {
                     res.status(400).send({success:'false',message:'your email already exists,please try another'})
                 }
+            }
     } catch (err) {
         console.log('line 28',err.message)
         res.status(500).send({success:'false',message:'internal server error'})

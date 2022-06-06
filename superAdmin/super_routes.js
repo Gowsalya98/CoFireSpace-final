@@ -1,8 +1,9 @@
 const router=require('express').Router()
 const adminControl=require('./super_controller')
+const valid=require('../middleware/validation')
 
-router.post('/addSubAdmin',adminControl.addSubAdmin)
-router.post('/login',adminControl.login)
+router.post('/addSubAdmin',valid.superValid,adminControl.addSubAdmin)
+router.post('/login',valid.superValid,adminControl.login)
 
 router.get('/getAll',adminControl.getAllSubAdminList)
 router.get('/get-subadmin/:id',adminControl.getSingleSubAdmin)

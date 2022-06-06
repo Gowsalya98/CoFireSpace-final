@@ -1,14 +1,14 @@
 const router=require('express').Router()
 const userControllers=require('./user_controller');
-const {validation}=require('../middleware/validation')
+const userValidation=require('../middleware/validation')
 
-router.post('/register',userControllers.userRegister)
+router.post('/register',userValidation.valid,userControllers.userRegister)
 
 router.get('/verification/:encryptId',userControllers.verifyUsers)
 
 router.post('/login',userControllers.login);
 
-router.post('/forgetPassword',validation,userControllers.forgetPassword)
+router.post('/forgetPassword',userValidation.validation,userControllers.forgetPassword)
 
 router.get('/getAll',userControllers.getAllUserList);
 
