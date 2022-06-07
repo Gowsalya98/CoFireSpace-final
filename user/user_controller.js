@@ -59,7 +59,7 @@ const login = async(req, res) => {
     try {
             const data=await register.findOne({ email: req.body.email,deleteFlag:false,active:true})
             console.log(data);
-            if (data) {
+            if (data!=null) {
                     console.log('line 84',data)
                      const password=await bcrypt.compare(req.body.password,data.password)
                 if(password==true){
@@ -67,7 +67,7 @@ const login = async(req, res) => {
                         const token = (jwt.sign({id:data._id}, 'secretKey'))
                         res.status(200).send({ success:'true',message: "Login Successfully", token, data:data })
                 } else {
-                    res.status(200).send({ success:'false',message: "invaild password",data:[]})
+                    res.status(200).send({ success:'false',message: "password mismatch",data:[]})
                 }
             }else{res.status(400).send({ success:'false',message: "please check your email",data:[]})}
     } catch (err) {

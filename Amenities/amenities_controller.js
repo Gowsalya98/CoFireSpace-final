@@ -32,6 +32,7 @@ const getAll=async(req,res)=>{
         console.log('line 25',data)
         if(data!=null){
             data.sort().reverse()
+            console.log('....',data[0]._id)
             res.status(200).send({success:'true',message:'Amenities details',data:data})
         }else{
             res.status(400).send({success:'false',message:'failed',data:[]})
