@@ -5,7 +5,7 @@ const filterSchema=mongoose.Schema({
     spaceId:String,
     userIpAddress:String,
     deleteFlag:{
-        type:Object,
+        type:Boolean,
         default:false
     }
 },{

@@ -1,13 +1,16 @@
 const mongoose=require('mongoose')
 const moment=require('moment')
+const {spaceType}=require('../spaceType(category)/category_model')
 const {spaceDetails}=require('../addSpace/space_model')
 const {filter}=require('./Filter_model')
 
 const uniqueSpace=async(req,res)=>{
     try{
         const data=await spaceDetails.aggregate([{$match:{$and:[{categoryName:req.params.categoryName},{deleteFlag:false},{status:'accept'}]}}])
+        console.log('line 9',data)
         if(data!=null){
             data.sort().reverse()
+            console.log('...',data)
             res.status(200).send({success:'true',message:'unique space',data:data})
         }else{
             res.status(302).send({success:'false',message:'data not found',data:[]})

@@ -17,13 +17,15 @@ const acceptSpaceForAdmin=require('./superAdmin/admin_routes')
 const filter=require('./FilterSpace/Filter_routes')
 const booking=require('./Booking/booking_routes')
 const acceptBookingForhost=require('./Booking/hostApproveSpace_route')
+const payment=require('./payment/payment_routes')
+
 app.use(cors())
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 
 app.use('/uploads', express.static('uploads'))
 
-app.use('/users', user,filter,booking)
+app.use('/users', user,filter,booking,payment)
 app.use('/admin',superAdmin,category,amenities,FAQ,acceptSpaceForAdmin)
 app.use('/host',space,acceptBookingForhost)
 
