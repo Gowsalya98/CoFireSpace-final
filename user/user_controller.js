@@ -23,8 +23,8 @@ const userRegister= async(req, res) => {
                     register.create(req.body, (err, data) => {
                         if (data) {
                             const encryptId=jwt.sign({id:data._id},'who are you')
-                            console.log(encryptId)
-                            postMail(data.email,'verification',`http://192.168.0.112:8080/users/verification/${encryptId}`)
+                            console.log('......',encryptId)
+                            //postMail(data.email,'verification',`http://192.168.0.112:8080/users/verification/${encryptId}`)
                             console.log('line 12',data)
                             res.status(200).send({ success:'true',message: 'Successfully register and verification send your email', data})    
                         } else {
@@ -81,9 +81,9 @@ const forgetPassword=(req,res)=>{
             sendOtp.findOne({ otp: req.body.otp }, async (err, result) => {
                 console.log("line 89", result)
                 if (result) {
-                    const token = jwt.decode(req.headers.authorization)
-                    const userid = token.id
-                    register.findOne({ _id:userid,deleteFlag:'false' }, async (err, data) => {
+                    // const token = jwt.decode(req.headers.authorization)
+                    // const userid = token.id
+                    register.findOne({email:req.body.email,deleteFlag:'false' }, async (err, data) => {
                         console.log("line 94", data)
                         if (data) {
                             if (req.body.email == data.email||req.body.contact==data.contact) {
@@ -95,7 +95,7 @@ const forgetPassword=(req,res)=>{
                                     console.log("line 102", req.body.confirmPassword)
 
                                     req.body.newPassword = await bcrypt.hash(req.body.newPassword, 10)
-                                    register.findOneAndUpdate({ _id:userid }, { $set:{password: req.body.newPassword} },{new:true}, (err, datas) => {
+                                    register.findOneAndUpdate({email:req.body.email }, { $set:{password: req.body.newPassword} },{new:true}, (err, datas) => {
                                         if (err) { throw err }
                                         else {
                                             console.log('line 108',datas);
@@ -109,9 +109,9 @@ const forgetPassword=(req,res)=>{
                 } else { res.status(400).send({ message: 'invalid otp' }) }
             })
         } else {
-            const token = jwt.decode(req.headers.authorization)
-            const userid = token.id
-            register.findOne({ _id:userid,deleteFlag:'false'},(err,data) => {
+            // const token = jwt.decode(req.headers.authorization)
+            // const userid = token.id
+            register.findOne({ email:req.body.email,deleteFlag:'false'},(err,data) => {
                 console.log("line 122", data)
                 if (data) {
                     console.log('line 124',data.email);
@@ -125,7 +125,7 @@ const forgetPassword=(req,res)=>{
                             if (err) { throw err }
                             if (result) {
                                 console.log("line 134", result)
-                                postMail(req.body.email, 'otp for changing password', otp)
+                                //postMail(req.body.email, 'otp for changing password', otp)
                                 console.log('line 136', otp)
 
                                 const response = await fast2sms.sendMessage({ authorization: process.env.OTPKEY,message:otp,numbers:[data.PhoneNumber]})
