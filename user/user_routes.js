@@ -22,4 +22,10 @@ router.delete('/delete-user',userControllers.deleteUserProfile)
 
 router.get('/getAll-acceptSpaceList',userControllers.getAllAcceptAndAvailableSpaceList)
 
+//count for user
+
+router.get('/total-user',userControllers.TotalUser)
+
+router.get('/new-user',userControllers.NewUser)
+
 module.exports=router;

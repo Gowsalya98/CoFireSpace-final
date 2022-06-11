@@ -18,6 +18,7 @@ const filter=require('./FilterSpace/Filter_routes')
 const booking=require('./Booking/booking_routes')
 const acceptBookingForhost=require('./Booking/hostApproveSpace_route')
 const payment=require('./payment/payment_routes')
+const report=require('./reportAndReview/report_routes')
 
 app.use(cors())
 app.use(express.urlencoded({ extended: true }))
@@ -25,7 +26,7 @@ app.use(express.json())
 
 app.use('/uploads', express.static('uploads'))
 
-app.use('/users', user,filter,booking,payment)
+app.use('/users', user,filter,booking,payment,report)
 app.use('/admin',superAdmin,category,amenities,FAQ,acceptSpaceForAdmin)
 app.use('/host',space,acceptBookingForhost)
 

@@ -4,7 +4,8 @@ const {validationResult}=require('express-validator')
 const mongoose=require('mongoose')
 const jwt = require("jsonwebtoken");
 const req = require('express/lib/request');
-const moment=require('moment')
+const moment=require('moment');
+const { spawnSync } = require('child_process');
 
 const addSpaceForHost=async(req,res)=>{
     try{
@@ -96,9 +97,44 @@ pass = yearArray.reduce((total,num)=>total = total + num)
 
 return pass;
 
-
 }
-
+const TotalSpace=async(req,res)=>{
+  try{
+    const superAdminToken=jwt.decode(req.headers.authorization)
+      if(superAdminToken!=null){
+        const data=await spaceDetails.aggregate([{$match:{deleteFlag:false}}])
+        if(data.length!=null){
+          const count=data.length
+          res.status(200).send({success:'true',message:'Total Space',count})
+        }else{
+          res.status(302).send({success:'false',message:'data not found',data:[]})
+        }
+      }else{
+        res.status(302).send({success:'false',message:'unauthorized'})
+      }
+  }catch(err){
+    res.status(500).send({message:'internal server error'})
+  }
+}
+const NewSpace=async(req,res)=>{
+  try{
+    const superAdminToken=jwt.decode(req.headers.authorization)
+      if(superAdminToken!=null){
+        const today=moment(new Date()).toISOString().slice(0,10)
+        const data=await spaceDetails.aggregate([{$match:{$and:[{createdAt:today},{deleteFlag:false}]}}])
+        if(data.length!=0){
+          const count=data.length
+          res.status(200).send({success:'true',message:'New Space',count})
+        }else{
+          res.status(400).send({success:'false',message:'data not found',data:[]})
+        }
+      }else{
+        res.status(302).send({success:'false',message:'unauthorized'})
+      }
+  }catch(err){
+    res.status(500).send({success:'false',message:'internal server error'})
+  }
+}
 const getById=async(req,res)=>{
     try{
         if(req.params.spaceId.length==24){
@@ -182,9 +218,12 @@ const deleteSpaceDetails=async(req,res)=>{
     }
 }
 
-module.exports={addSpaceForHost,
-                  getById,
-                  updateSpaceDetails,
-                  deleteSpaceDetails,
-                  hostGetOurOwnSpaceDetails
+module.exports={
+  addSpaceForHost,
+  TotalSpace,
+  NewSpace,
+  getById,
+  updateSpaceDetails,
+  deleteSpaceDetails,
+  hostGetOurOwnSpaceDetails
 }

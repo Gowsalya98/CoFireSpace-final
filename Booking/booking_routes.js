@@ -14,4 +14,10 @@ router.get('/getAll-booking',bookingControl.getAllBooking)
 
 router.get('/getById-booking/:bookingId',bookingControl.getById)
 
+//count for reservation details
+
+router.get('/total-reserve',bookingControl.TotalReserve)
+
+router.get('/new-reserve',bookingControl.NewReserve)
+
 module.exports=router

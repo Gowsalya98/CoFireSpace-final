@@ -12,5 +12,10 @@ router.put('/update-space/:spaceId',spaceControl.updateSpaceDetails)
 
 router.delete('/delete-space/:spaceId',spaceControl.deleteSpaceDetails)
 
+//space count 
+
+router.get('/total-space',spaceControl.TotalSpace)
+
+router.get('/new-space',spaceControl.NewSpace)
 
 module.exports=router

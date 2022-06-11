@@ -19,13 +19,13 @@ const userRegister= async(req, res) => {
                 if (num.length== 0) {
                     req.body.password = await bcrypt.hash(req.body.password, 10)
                     req.body.createdAt=moment(new Date()).toISOString().slice(0,10)
-                    console.log('line 21',req.body.createdAt)
+                    console.log('line 22',req.body.createdAt)
                     register.create(req.body, (err, data) => {
                         if (data) {
                             const encryptId=jwt.sign({id:data._id},'who are you')
                             console.log('......',encryptId)
                             //postMail(data.email,'verification',`http://192.168.0.112:8080/users/verification/${encryptId}`)
-                            console.log('line 12',data)
+                            console.log('line 28',data)
                             res.status(200).send({ success:'true',message: 'Successfully register and verification send your email', data})    
                         } else {
                              res.staus(400).send({ success:'false',message: 'failed to register data' })
@@ -69,7 +69,7 @@ const login = async(req, res) => {
                 } else {
                     res.status(200).send({ success:'false',message: "password mismatch",data:[]})
                 }
-            }else{res.status(400).send({ success:'false',message: "please check your email",data:[]})}
+            }else{res.status(400).send({ success:'false',message: "please register here",data:[]})}
     } catch (err) {
         console.log(err)
         res.status(500).send({success:'false',message:'internal server error'})
@@ -169,7 +169,7 @@ const getAllUserList = async(req, res) => {
         const token=jwt.decode(req.headers.authorization)
         if(token!==null){
         const data=await register.aggregate([{$match:{deleteFlag:false}}])
-        console.log('line 85',data)
+        console.log('line 172',data)
         if(data.length!=0){
             data.sort().reverse()
             res.status(200).send({success:'true',message:'All datas',data:data})
@@ -184,7 +184,45 @@ const getAllUserList = async(req, res) => {
         res.status(500).send({message:"internal server error"})
     }
 }
-
+const TotalUser=async(req,res)=>{
+    try{
+        const superAdminToken=jwt.decode(req.headers.authorization)
+        if(superAdminToken!=null){
+            const data=await register.aggregate([{$match:{deleteFlag:false}}])
+            if(data.length!=0){
+                const count=data.length
+                res.status(200).send({success:'true',message:'Total User',count})
+            }else{
+                res.status(400).send({success:'false',message:'data not found'})
+            }
+        }else{
+            res.status(302).send({success:'false',message:'unauthorized'})
+        }
+    }catch(err){
+        res.status(500).send({message:'internal server error'})
+    }
+}
+const NewUser=async(req,res)=>{
+    try{
+        const superAdminToken=jwt.decode(req.headers.authorization)
+        if(superAdminToken!=null){
+            const data=await register.aggregate([{$match:{deleteFlag:false}}])
+            const today=moment(new Date()).toISOString().slice(0,10)
+            var arr=[]
+            data.map((datas)=>{
+                if(today==datas.createdAt){
+                    arr.push(datas)
+                }   
+            })
+            const count=arr.length
+            res.status(200).send({success:'true',message:'New User',count})
+        }else{
+            res.status(302).send({success:'false',message:'unauthorized'})
+        }
+    }catch(err){
+        res.status(500).send({success:'false',message:'internal server error'})
+    }
+}
 const getSingleUser = async(req, res) => {
     try {
         const token=jwt.decode(req.headers.authorization)
@@ -247,7 +285,16 @@ const getAllAcceptAndAvailableSpaceList=async(req,res)=>{
         res.status(500).send({message:'internal server error'})
     }
 }
-module.exports={userRegister,login,forgetPassword,
-    getAllUserList,getSingleUser,updateUserProfile,
-    deleteUserProfile,verifyUsers,getAllAcceptAndAvailableSpaceList
+module.exports={
+    userRegister,
+    login,
+    forgetPassword,
+    getAllUserList,
+    TotalUser,
+    NewUser,
+    getSingleUser,
+    updateUserProfile,
+    deleteUserProfile,
+    verifyUsers,
+    getAllAcceptAndAvailableSpaceList
 }

@@ -169,5 +169,10 @@ const deleteSubAdminDetails=async(req,res)=>{
     }
 }
 module.exports={
-    login,addSubAdmin,getAllSubAdminList,getSingleSubAdmin,updateSubAdminDetails,deleteSubAdminDetails
+    login,
+    addSubAdmin,
+    getAllSubAdminList,
+    getSingleSubAdmin,
+    updateSubAdminDetails,
+    deleteSubAdminDetails
 }

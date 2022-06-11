@@ -128,7 +128,43 @@ const getAllBooking=async(req,res)=>{
         res.status(500).send({message:'internal server error'})
     }
 }
-
+const TotalReserve=async(req,res)=>{
+    try{
+        const superAdminToken=jwt.decode(req.headers.authorization)
+        if(superAdminToken!=null){
+            const data=await booking.aggregate([{$match:{deleteFlag:false}}])
+            if(data.length!=0){
+                const count=data.length
+                res.status(200).send({success:'true',message:'Total Reserve',count})
+            }else{
+                res.status(302).send({success:'false',message:'data not found',data:[]})
+            }
+        }else{
+            res.status(302).send({success:'false',message:'unauthorized'})
+        }
+    }catch(err){
+        res.status(500).send({message:'internal server error'})
+    }
+}
+const NewReserve=async(req,res)=>{
+    try{
+        const superAdminToken=jwt.decode(req.headers.authorization)
+        if(superAdminToken!=null){
+            const today=moment(new Date()).toISOString().slice(0,10)
+            const data=await booking.aggregate([{$match:{$and:[{createdAt:today},{deleteFlag:false}]}}])
+            if(data.length!=0){
+                const count=data.length
+                res.status(200).send({success:'true',message:'New Reserve',count})
+            }else{
+                res.status(400).send({success:'false',message:'data not found',data:[]})
+            }
+        }else{
+            res.status(302).send({success:'false',message:'unauthorized'})
+        }
+    }catch(err){
+        res.status(500).send({message:'internal server error'})
+    }
+}
 const getById=async(req,res)=>{
     try{
         if(req.params.bookingId.length==24){
@@ -152,5 +188,7 @@ module.exports={
     currentBookingDetails,
     pastBookingDetails,
     getAllBooking,
+    TotalReserve,
+    NewReserve,
     getById
 }
