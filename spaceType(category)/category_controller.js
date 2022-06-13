@@ -1,4 +1,4 @@
-const {image,spaceType}=require('./category_model')
+const {imageData,spaceType}=require('./category_model')
 const {validationResult}=require('express-validator')
 const mongoose=require('mongoose')
 const moment=require('moment')
@@ -32,16 +32,16 @@ const addSpaceType=async(req,res)=>{
         res.status(500).send({message:err.message})
     }
 }
-const spaceImage=async(req,res)=>{
+const imageDetails=async(req,res)=>{
     try{
-      if(req.file.originalname==null||undefined){
+      console.log('line 37',req.file)
+      if(req.file==null||undefined){
         req.body.image=""
       }else{
-        console.log('line',req.file)
-        req.body.image=`http://192.168.0.112:8080/uploads/${req.file.originalname}`
+        req.body.image=`http://192.168.0.112:8080/uploads/${req.file.filename}`
         req.body.createdAt=moment(new Date()).toISOString().slice(0,10)
-          console.log('line 43',req.body.createdAt)
-        image.create(req.body,async(err,data)=>{
+          console.log('line 50',req.body.createdAt)
+          imageData.create(req.body,async(err,data)=>{
           if(err){
             res.status(400).send({success:'false',message:'failed'})
           }else{
@@ -139,4 +139,4 @@ const deleteSpaceType=async(req,res)=>{
     }
 }
 
-module.exports={addSpaceType,getAllSpaceType,getById,spaceImage,updateSpaceType,deleteSpaceType}
+module.exports={addSpaceType,getAllSpaceType,getById,imageDetails,updateSpaceType,deleteSpaceType}

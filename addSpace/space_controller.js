@@ -1,11 +1,12 @@
-const {spaceDetails}=require('./space_model')
+const {spaceDetails,spaceImage}=require('./space_model')
 const {register}=require('../user/user_model')
 const {validationResult}=require('express-validator')
 const mongoose=require('mongoose')
 const jwt = require("jsonwebtoken");
+const multer=require('multer')
 const req = require('express/lib/request');
 const moment=require('moment');
-const { spawnSync } = require('child_process');
+
 
 const addSpaceForHost=async(req,res)=>{
     try{
@@ -97,6 +98,37 @@ pass = yearArray.reduce((total,num)=>total = total + num)
 
 return pass;
 
+}
+
+const Image=async(req,res)=>{
+  try{
+    console.log(req.files)
+    if(req.files.length==0){
+      req.body.image=""
+    }else{
+      console.log('line 40',req.files)
+      var arr=[]
+      for(i=0;i<req.files.length;i++){
+       const aa=`http://192.168.0.112:8080/uploads/${req.files[i].filename}`
+        arr.push(aa)
+      }
+      console.log('line 49',arr)
+      req.body.image=arr
+      req.body.createdAt=moment(new Date()).toISOString().slice(0,10)
+        console.log('line 50',req.body.createdAt)
+      spaceImage.create(req.body,async(err,data)=>{
+        if(err){
+          res.status(400).send({success:'false',message:'failed'})
+        }else{
+          console.log('line',data)
+          res.status(200).send({success:'true',message:'image upload successfully',data})
+        }
+      })
+    }
+    
+  }catch(err){
+      res.status(500).send({message:err.message})
+  }
 }
 const TotalSpace=async(req,res)=>{
   try{
@@ -220,6 +252,7 @@ const deleteSpaceDetails=async(req,res)=>{
 
 module.exports={
   addSpaceForHost,
+  Image,
   TotalSpace,
   NewSpace,
   getById,

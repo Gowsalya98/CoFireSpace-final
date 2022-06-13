@@ -2,7 +2,11 @@ const router=require('express').Router()
 
 const spaceControl=require('./space_controller')
 
+const multer=require('../middleware/multer')
+
 router.post('/addSpace',spaceControl.addSpaceForHost)
+
+router.post('/spaceImage',multer.upload.array('image',5),spaceControl.Image)
 
 router.get('/ownSpaceList',spaceControl.hostGetOurOwnSpaceDetails)
 

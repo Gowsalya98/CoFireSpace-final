@@ -4,7 +4,7 @@ const spaceTypeControl=require('./category_controller')
 
 router.post('/addSpaceType',spaceTypeControl.addSpaceType)
 
-router.post('/image',multer.upload.single('image'),spaceTypeControl.spaceImage)
+router.post('/image',multer.upload.single('image'),spaceTypeControl.imageDetails) 
 
 router.get('/getAll-spaceType',spaceTypeControl.getAllSpaceType)
 

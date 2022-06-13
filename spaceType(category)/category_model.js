@@ -31,6 +31,7 @@ const ImageSchema=mongoose.Schema({
 
 
 const spaceType= mongoose.model('spaceTypeAddForSuperAdmin', spaceTypeAddForSuperAdmin)
-const image=mongoose.model('ImageSchema',ImageSchema)
 
-module.exports={spaceType,image}
+const imageData=mongoose.model('ImageSchema',ImageSchema)
+
+module.exports={spaceType,imageData}

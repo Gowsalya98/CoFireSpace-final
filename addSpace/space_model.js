@@ -5,14 +5,25 @@ const spaceAddForHost=mongoose.Schema({
     HostId:String,
     HostDetails:Object,
     categoryName:String,
+    spaceBuildYear:String,
+    spaceSqFt:String,
+    garageSize:Number,
+    garages:Number,
+    bathrooms:Number,
+    bedrooms:Number,
     contact:Number,
     address:String,
     city:String,
+    country:String,
     pincode:String,
-    spaceSqFt:String,
+    currency:String,
+    desc:String,
     numOfPersonFitInRoom:Number,
+    parkingSpace:String,
+    spaceTime:String,
+    price:Number,
     amenities:[String],
-    category:String,
+    multipleSpaceImage:[String],
     spaceImage:[String],
     userIpAddress:[String],
     ipAddressCount:{
@@ -20,8 +31,6 @@ const spaceAddForHost=mongoose.Schema({
         default:0
     },
     //noOfDays:Number,
-    spaceTime:String,
-    price:Number,
     spaceBookingStatus:{
         type:String,
         default:'availableSpace'
@@ -36,6 +45,19 @@ const spaceAddForHost=mongoose.Schema({
     }
 })
 
+const spaceImageSchema=mongoose.Schema({
+    image:[String],
+    deleteFlag:{
+        type:Boolean,
+        default:false
+    },
+    createdAt:String
+    },{
+        collection:"spaceImage"
+})
+
+const spaceImage=mongoose.model('spaceImageSchema',spaceImageSchema)
+
 const spaceDetails=mongoose.model('spaceAddForHost',spaceAddForHost)
 
-module.exports={spaceDetails}
+module.exports={spaceDetails,spaceImage}
