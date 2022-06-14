@@ -30,7 +30,7 @@ const HostAcceptUserBooking=async(req,res)=>{
         console.log('line 11',data)
         if(data){
             console.log('line 13',data.userDetails.email)
-            postMail(data.userDetails.email,"Booking Confirmation","congratulations...!,your booking is accepted")
+          //  postMail(data.userDetails.email,"Booking Confirmation","congratulations...!,your booking is accepted")
             const datas=await booking.findOneAndUpdate({_id:req.params.bookingId},{$set:{bookingStatus:"acceptBooking","spaceDetails.spaceBookingStatus":"booked"}},{new:true})
             if(datas){
                 console.log('line 17',datas)
@@ -53,7 +53,7 @@ const HostRejectUserBooking=async(req,res)=>{
         console.log('line 30',data)
         if(data){
             console.log('line 32',data.userDetails.email)
-            postMail(data.userDetails.email,"Your Request Not Accept","oops...!,your booking is not accepted")
+           // postMail(data.userDetails.email,"Your Request Not Accept","oops...!,your booking is not accepted")
             const datas=await booking.findOneAndUpdate({_id:req.params.bookingId},{$set:{bookingStatus:"rejectBooking","spaceDetails.spaceBookingStatus":"availableSpace"}},{new:true})
             if(datas){
                 console.log('line 36',datas)

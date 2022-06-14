@@ -139,4 +139,11 @@ const deleteSpaceType=async(req,res)=>{
     }
 }
 
-module.exports={addSpaceType,getAllSpaceType,getById,imageDetails,updateSpaceType,deleteSpaceType}
+module.exports={
+  addSpaceType,
+  getAllSpaceType,
+  getById,
+  imageDetails,
+  updateSpaceType,
+  deleteSpaceType
+}

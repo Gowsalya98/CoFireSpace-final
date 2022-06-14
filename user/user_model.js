@@ -13,6 +13,7 @@ const RegisterSchema = mongoose.Schema({
     newPassword:String,
     confirmPassword:String,
     DOB:String,
+    profileImage:{type:String,default:''},
     about:{type:String,default:''},
     address:{type:String,default:''},
     agencyName:{type:String,default:''},

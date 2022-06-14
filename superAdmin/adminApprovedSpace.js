@@ -29,7 +29,7 @@ const adminAcceptSpaceDetails=async(req,res)=>{
         console.log('line 11',data)
         if(data){
             console.log('line 31',data.HostDetails.email)
-            postMail(data.HostDetails.email,"space details confirmation","congratulations...!,Your space details is Accept")
+           // postMail(data.HostDetails.email,"space details confirmation","congratulations...!,Your space details is Accept")
             const datas=await spaceDetails.findOneAndUpdate({_id:req.params.spaceId},{status:"accept"},{new:true})
             if(datas){
                 console.log('line 35',datas)
@@ -51,7 +51,7 @@ const adminRejectSpaceDetails=async(req,res)=>{
         console.log('line 51',data)
         if(data){
             console.log('line 53',data.HostDetails.email)
-            postMail(data.HostDetails.email,"space details confirmation","oops...!,Your space details not accept")
+          //  postMail(data.HostDetails.email,"space details confirmation","oops...!,Your space details not accept")
             const datas=await spaceDetails.findOneAndUpdate({_id:req.params.spaceId},{status:"reject"},{new:true})
             if(datas){
                 console.log('line 57',datas)

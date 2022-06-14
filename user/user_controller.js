@@ -225,10 +225,11 @@ const NewUser=async(req,res)=>{
 }
 const getSingleUser = async(req, res) => {
     try {
-        const token=jwt.decode(req.headers.authorization)
-        if(token!=null){
-            const data=await register.aggregate([{$match:{$and:[{"_id":new mongoose.Types.ObjectId(token.id)},{'deleteFlag':false}]}}])
+        const userToken=jwt.decode(req.headers.authorization)
+        if(userToken!=null){
+            const data=await register.aggregate([{$match:{$and:[{"_id":new mongoose.Types.ObjectId(userToken.id)},{'deleteFlag':false}]}}])
             if(data!=null){
+                console.log('line 232',data);
                 res.status(200).send({success:'true',message:'your data',data:data[0]})
             }else{
                 res.status(302).send({success:'false',data:[]})

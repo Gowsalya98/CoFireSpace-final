@@ -22,6 +22,7 @@ const spaceAddForHost=mongoose.Schema({
     parkingSpace:String,
     spaceTime:String,
     price:Number,
+    rating:{type:Number,default:0},
     amenities:[String],
     multipleSpaceImage:[String],
     spaceImage:[String],
@@ -30,6 +31,7 @@ const spaceAddForHost=mongoose.Schema({
         type:Number,
         default:0
     },
+    review:[],
     //noOfDays:Number,
     spaceBookingStatus:{
         type:String,

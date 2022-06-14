@@ -18,12 +18,14 @@ const reviewSchema=mongoose.Schema({
     createdAt:String,
     quotes:String,
     description:String,
-    spaceDetails:Object,
-    userDetails:Object,
+    spaceId:String,
+    userId:String,
     deleteFlag:{
         type:Boolean,
         default:false
     }
+},{
+    collection:'review' 
 })
 
 const report=mongoose.model('reportSchema',reportSchema)

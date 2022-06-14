@@ -4,7 +4,6 @@ const {validationResult}=require('express-validator')
 const mongoose=require('mongoose')
 const jwt = require("jsonwebtoken");
 const multer=require('multer')
-const req = require('express/lib/request');
 const moment=require('moment');
 
 
