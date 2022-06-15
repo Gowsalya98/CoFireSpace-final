@@ -14,7 +14,7 @@ const addSpaceForHost=async(req,res)=>{
             const token=await jwt.decode(req.headers.authorization)
             req.body.HostId=token.id
             console.log('line 13',req.body.HostId)
-            const result=await register.aggregate([{$match:{$and:[{_id:new mongoose.Types.ObjectId(token.id)},{deleteFlag:false}]}}])
+            const result=await register.aggregate([{$match:{$and:[{"_id":new mongoose.Types.ObjectId(token.id)},{deleteFlag:false}]}}])
             if(result){
               console.log('line 16',result)
                 req.body.HostDetails=result[0]
